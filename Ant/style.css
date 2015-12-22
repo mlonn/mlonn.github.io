@@ -1,0 +1,19 @@
+﻿h1, h2 {
+	text-align: center;
+    font-family: 'roboto';
+}
+canvas {
+    width: 1280px;
+    height: 720px;
+    display: block;
+    margin: 0 auto;
+    border: 4px purple;
+}
+#controls {
+    text-align: center;
+    font-family: 'roboto';
+}
+
+#sliderMax {
+  display: inline;
+}

@@ -1,0 +1,36 @@
+﻿h1,h2 {
+    text-align: center;
+    font-family: 'Comic Sans MS';
+-webkit-text-stroke: 2px black;
+margin: 5px 0;
+}
+
+input {
+
+    margin: 5px auto;
+    display: block;
+    width: 800px;
+}
+
+h1 {
+    color: hotpink;
+    font-size: 3em;
+}
+
+h2 {
+    font-size: 2em;
+    color: #09CDDA;
+}
+
+canvas {
+    width: 800px;
+    height: 800px;
+    display: block;
+    margin: 0 auto;
+    border: 4px outset lime;
+}
+
+img {
+    display: none;
+}
+

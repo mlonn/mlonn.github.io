@@ -1,0 +1,156 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Langton's Ant</title>
+    <meta charset="utf-8" />
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+    <link href="style.css" rel="stylesheet" />
+    <script src="ant.js"></script>
+</head>
+<body>
+    <h1>Langton's Ant</h1>
+    <h2 id="counter">Number of steps = 0</h2>
+    <canvas id="canvas" width="1280" height="720"></canvas>
+    <div id="controls">
+        Number of ants: 1 <input id="numberOfAntsSlider" type="range" min="1" max="500" step="1" value="4" /> <p id="sliderMax" style="font-style: normal"></p><br>
+        Size of ant:
+        <select id="sizeComboBox" onclick="updateSlider();">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option selected="selected" value="8">8</option>
+            <option value="10">10</option>
+            <option value="16">16</option>
+            <option value="20">20</option>
+        </select> <br>
+        <button id="playButton" onclick="playPause();">Pause</button>
+        <button id="restartButton" onclick="restart();">Restart</button>
+    </div>
+
+
+    <script>
+
+        var canvas = document.getElementById("canvas");
+        var context = canvas.getContext('2d');
+        context.fillStyle = "black";
+        context.fillRect(0, 0, canvas.width, canvas.height);
+        var max = Math.floor(500 / document.getElementById("sizeComboBox").value);
+        document.getElementById("numberOfAntsSlider").max = max;
+        var intevalId;
+        var counter = 0;
+        var size = 8;
+        var numberOfAnts = 4;
+        var rows = canvas.height / this.size;
+        var columns = canvas.width / this.size;
+        var grid = Create2DArray(rows, columns);
+        var ants = new Array(numberOfAnts);
+        updateSlider();
+        initAnts();
+
+
+        function initAnts() {
+            for (var i = 0; i < numberOfAnts; i++) {
+                ants[i] = new ant(Math.floor(Math.random() * (columns - 1) + 1), Math.floor(Math.random() * (rows - 1) + 1), getRandomColor(), (Math.floor(Math.random() * 3)));
+            }
+        }
+
+        function restart() {
+            context.fillStyle = "black";
+            context.fillRect(0, 0, canvas.width, canvas.height);
+            counter = 0;
+            size = document.getElementById("sizeComboBox").value;
+            rows = canvas.height / this.size;
+            columns = canvas.width / this.size;
+            grid = Create2DArray(rows, columns);
+            numberOfAnts = document.getElementById("numberOfAntsSlider").value;
+            initAnts();
+        }
+
+        function updateSlider() {
+            max = Math.floor(500 / document.getElementById("sizeComboBox").value);
+            document.getElementById("numberOfAntsSlider").max = max;
+            document.getElementById("sliderMax").innerHTML = max;
+        }
+
+        function update() {
+            this.counter++;
+            for (var i = 0; i < numberOfAnts; i++) {
+                updateAnt(ants[i]);
+            }
+        }
+
+        function updateAnt(ant) {
+            wallCollision(ant);
+            if (this.grid[ant.x][ant.y]) {
+                ant.turnRight();
+                this.grid[ant.x][ant.y] = false;
+            } else {
+                ant.turnLeft();
+                this.grid[ant.x][ant.y] = true;
+            }
+            render(ant, this.grid[ant.x][ant.y]);
+            ant.step();
+            document.getElementById("counter").innerHTML = "Number of steps = " + counter;
+        }
+
+        function render(ant, flag) {
+            if (flag) {
+                context.fillStyle = "black";
+            } else {
+                context.fillStyle = ant.c;
+            }
+            context.fillRect(ant.x * size, ant.y * size, size, size);
+        }
+
+        function playPause() {
+            if (intervalId < 0) {
+                intervalId = window.setInterval(update, 1);
+                document.getElementById("playButton").innerHTML = "Pause";
+            } else {
+                window.clearInterval(intervalId);
+                document.getElementById("playButton").innerHTML = "Play";
+                intervalId = -1;
+            }
+
+            
+        }
+
+        function wallCollision(ant) {
+            if (ant.x >= this.columns) {
+                ant.x = 0;
+            } else if (ant.x < 0) {
+                ant.x = this.columns - 1;
+            }
+            if (ant.y >= this.rows) {
+                ant.y = 0;
+            } else if (ant.y < 0) {
+                ant.y = this.rows - 1;
+        }
+            }
+
+
+        function Create2DArray(rows, columns) {
+            var arr = new Array(rows);
+            for (var i = 0; i < columns; i++) {
+                arr[i] = new Array(columns);
+                for (var j = 0; j < columns; j++) {
+                    arr[i][j] = false;
+                }
+            }
+            return arr;
+        }
+
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF'.split('');
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        intervalId = window.setInterval(update, 1);
+    </script>
+</body>
+</html>
